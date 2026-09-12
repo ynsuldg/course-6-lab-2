@@ -15,12 +15,12 @@ function TaskCard({
   priority,
 }: TaskCardProps) {
   return (
-    <article>
-      <p>{category}</p>
+    <article className="task-card">
+      <p className="category">{category}</p>
       <h2>{title}</h2>
       <p>{description}</p>
       <p>Ansvarig: {assignee}</p>
-      <p>Prioritet: {priority}</p>
+      <p className="priority">Prioritet: {priority}</p>
     </article>
   )
 }

@@ -1,11 +1,15 @@
+import type { ReactNode } from 'react'
+
 type ColumnProps = {
   title: string
+  children: ReactNode
 }
 
-function Column({ title }: ColumnProps) {
+function Column({ title, children }: ColumnProps) {
   return (
-    <section>
+    <section className="column">
       <h2>{title}</h2>
+      {children}
     </section>
   )
 }
