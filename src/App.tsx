@@ -1,6 +1,7 @@
 import Header from './components/Header'
 import Column from './components/Column'
 import TaskCard from './components/TaskCard'
+import type { Task } from './types/Task'
 import './App.css'
 
 function App() {
