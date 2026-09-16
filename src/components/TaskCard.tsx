@@ -8,6 +8,7 @@ type TaskCardProps = {
 }
 
 function TaskCard({
+  id,
   title,
   description,
   assignee,
@@ -16,6 +17,7 @@ function TaskCard({
 }: TaskCardProps) {
   return (
     <article className="task-card">
+      <p>Id: {id}</p>
       <p className="category">{category}</p>
       <h2>{title}</h2>
       <p>{description}</p>
