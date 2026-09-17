@@ -3,7 +3,6 @@ import Column from './components/Column'
 import TaskCard from './components/TaskCard'
 import NewTaskForm from './components/NewTaskForm'
 import type { Task } from './types/Task'
-import './App.css'
 
 const tasks: Task[] = [
   {
@@ -95,11 +94,11 @@ function App() {
   const doneTasks = tasks.filter((task) => task.status === 'done')
 
   return (
-    <>
+    <div className="min-h-screen bg-slate-50 text-slate-900">
       <Header />
-      <main>
+      <main className="mx-auto max-w-6xl space-y-10 px-6 py-10">
         <NewTaskForm />
-        <div className="board">
+        <div className="space-y-8">
           <Column title="Todo">
             {todoTasks.map((task) => (
               <TaskCard
@@ -141,7 +140,7 @@ function App() {
           </Column>
         </div>
       </main>
-    </>
+    </div>
   )
 }
 
