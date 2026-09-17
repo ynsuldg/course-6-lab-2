@@ -98,7 +98,7 @@ function App() {
       <Header />
       <main className="mx-auto max-w-6xl space-y-10 px-6 py-10">
         <NewTaskForm />
-        <div className="space-y-8">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <Column title="Todo">
             {todoTasks.map((task) => (
               <TaskCard
@@ -109,6 +109,7 @@ function App() {
                 assignee={task.assignee}
                 category={task.category}
                 priority={task.priority}
+                status={task.status}
               />
             ))}
           </Column>
@@ -122,6 +123,7 @@ function App() {
                 assignee={task.assignee}
                 category={task.category}
                 priority={task.priority}
+                status={task.status}
               />
             ))}
           </Column>
@@ -135,6 +137,7 @@ function App() {
                 assignee={task.assignee}
                 category={task.category}
                 priority={task.priority}
+                status={task.status}
               />
             ))}
           </Column>
