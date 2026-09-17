@@ -1,6 +1,7 @@
 import Header from './components/Header'
 import Column from './components/Column'
 import TaskCard from './components/TaskCard'
+import NewTaskForm from './components/NewTaskForm'
 import type { Task } from './types/Task'
 import './App.css'
 
@@ -97,6 +98,7 @@ function App() {
     <>
       <Header />
       <main>
+        <NewTaskForm />
         <div className="board">
           <Column title="Todo">
             {todoTasks.map((task) => (
