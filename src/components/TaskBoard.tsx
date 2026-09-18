@@ -6,7 +6,7 @@ import TaskCard from './TaskCard'
 
 type TaskBoardProps = {
   tasks: Task[]
-  onCreateTask: (task: NewTask) => void
+  onCreateTask: (task: NewTask) => Promise<void>
 }
 
 function TaskBoard({ tasks, onCreateTask }: TaskBoardProps) {

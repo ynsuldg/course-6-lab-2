@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { NewTask } from '../types/Task'
 
 type NewTaskFormProps = {
-  onCreateTask: (task: NewTask) => void
+  onCreateTask: (task: NewTask) => Promise<void>
 }
 
 function NewTaskForm({ onCreateTask }: NewTaskFormProps) {
@@ -12,7 +12,7 @@ function NewTaskForm({ onCreateTask }: NewTaskFormProps) {
   const [category, setCategory] = useState('')
   const [priority, setPriority] = useState('Låg')
 
-  const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     const newTask: NewTask = {
@@ -23,13 +23,17 @@ function NewTaskForm({ onCreateTask }: NewTaskFormProps) {
       priority,
     }
 
-    onCreateTask(newTask)
+    try {
+      await onCreateTask(newTask)
 
-    setTitle('')
-    setDescription('')
-    setAssignee('')
-    setCategory('')
-    setPriority('Låg')
+      setTitle('')
+      setDescription('')
+      setAssignee('')
+      setCategory('')
+      setPriority('Låg')
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
