@@ -3,11 +3,13 @@ import { createTask, getTasks } from '../db/tasks.js'
 
 const router = Router()
 
-router.get('/', (_request, response) => {
-  response.json(getTasks())
+router.get('/', async (_request, response) => {
+  const tasks = await getTasks()
+
+  response.json(tasks)
 })
 
-router.post('/', (request, response) => {
+router.post('/', async (request, response) => {
   const { title, description, assignee, category, priority } = request.body
 
   if (!title || !description || !assignee || !category || !priority) {
@@ -16,7 +18,7 @@ router.post('/', (request, response) => {
     })
   }
 
-  const task = createTask({
+  const task = await createTask({
     title,
     description,
     assignee,

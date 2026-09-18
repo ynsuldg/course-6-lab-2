@@ -1,6 +1,13 @@
-const tasks = [
+import { neon } from '@neondatabase/serverless'
+
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL is missing in backend/.env')
+}
+
+const sql = neon(process.env.DATABASE_URL)
+
+const initialTasks = [
   {
-    id: 1,
     title: 'Bygga formulär',
     description: 'Bygg ett formulär för att skapa nya uppgifter.',
     assignee: 'Adam',
@@ -9,7 +16,6 @@ const tasks = [
     status: 'todo',
   },
   {
-    id: 2,
     title: 'Planera navigation',
     description: 'Planera appens navigation och sidstruktur.',
     assignee: 'Bertil',
@@ -18,7 +24,6 @@ const tasks = [
     status: 'todo',
   },
   {
-    id: 3,
     title: 'Skapa datamodell',
     description: 'Definiera typer för appens data.',
     assignee: 'Cesar',
@@ -27,7 +32,6 @@ const tasks = [
     status: 'todo',
   },
   {
-    id: 4,
     title: 'Skapa dashboard',
     description: 'Bygg gränssnittet för projektets dashboard.',
     assignee: 'David',
@@ -36,7 +40,6 @@ const tasks = [
     status: 'doing',
   },
   {
-    id: 5,
     title: 'Designa task-kort',
     description: 'Ta fram en tydlig design för task-korten.',
     assignee: 'Erik',
@@ -45,7 +48,6 @@ const tasks = [
     status: 'doing',
   },
   {
-    id: 6,
     title: 'Förbättra layout',
     description: 'Justera kolumnernas layout och mellanrum.',
     assignee: 'Filip',
@@ -54,7 +56,6 @@ const tasks = [
     status: 'doing',
   },
   {
-    id: 7,
     title: 'Skriva tester',
     description: 'Skriv tester för projektets komponenter.',
     assignee: 'Gustav',
@@ -63,7 +64,6 @@ const tasks = [
     status: 'done',
   },
   {
-    id: 8,
     title: 'Skapa header',
     description: 'Skapa appens header-komponent.',
     assignee: 'Harald',
@@ -72,7 +72,6 @@ const tasks = [
     status: 'done',
   },
   {
-    id: 9,
     title: 'Skapa kolumner',
     description: 'Skapa kolumner för Todo, Doing och Done.',
     assignee: 'Ivar',
@@ -82,19 +81,63 @@ const tasks = [
   },
 ]
 
-export function getTasks() {
-  return tasks
+async function initializeDatabase() {
+  await sql`
+    CREATE TABLE IF NOT EXISTS tasks (
+      id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+      title TEXT NOT NULL,
+      description TEXT NOT NULL,
+      assignee TEXT NOT NULL,
+      category TEXT NOT NULL,
+      priority TEXT NOT NULL,
+      status TEXT NOT NULL CHECK (status IN ('todo', 'doing', 'done'))
+    )
+  `
+
+  const [{ count }] = await sql`SELECT COUNT(*)::int AS count FROM tasks`
+
+  if (count === 0) {
+    for (const task of initialTasks) {
+      await sql`
+        INSERT INTO tasks (
+          title,
+          description,
+          assignee,
+          category,
+          priority,
+          status
+        )
+        VALUES (
+          ${task.title},
+          ${task.description},
+          ${task.assignee},
+          ${task.category},
+          ${task.priority},
+          ${task.status}
+        )
+      `
+    }
+  }
 }
 
-export function createTask(taskData) {
-  const nextId = Math.max(0, ...tasks.map((task) => task.id)) + 1
-  const task = {
-    id: nextId,
-    ...taskData,
-    status: 'todo',
-  }
+await initializeDatabase()
 
-  tasks.push(task)
+export async function getTasks() {
+  return sql`SELECT * FROM tasks ORDER BY id`
+}
+
+export async function createTask({
+  title,
+  description,
+  assignee,
+  category,
+  priority,
+}) {
+  const [task] = await sql`
+    INSERT INTO tasks (title, description, assignee, category, priority, status)
+    VALUES (${title}, ${description}, ${assignee}, ${category}, ${priority}, 'todo')
+    RETURNING *
+  `
 
   return task
 }
