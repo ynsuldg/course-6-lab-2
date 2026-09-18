@@ -1,10 +1,9 @@
+import { useState } from 'react'
 import Header from './components/Header'
-import Column from './components/Column'
-import TaskCard from './components/TaskCard'
-import NewTaskForm from './components/NewTaskForm'
-import type { Task } from './types/Task'
+import TaskBoard from './components/TaskBoard'
+import type { NewTask, Task } from './types/Task'
 
-const tasks: Task[] = [
+const initialTasks: Task[] = [
   {
     id: 1,
     title: 'Bygga formulär',
@@ -89,60 +88,27 @@ const tasks: Task[] = [
 ]
 
 function App() {
-  const todoTasks = tasks.filter((task) => task.status === 'todo')
-  const doingTasks = tasks.filter((task) => task.status === 'doing')
-  const doneTasks = tasks.filter((task) => task.status === 'done')
+  const [tasks, setTasks] = useState<Task[]>(initialTasks)
+
+  const handleCreateTask = (newTask: NewTask) => {
+    setTasks((currentTasks) => {
+      const nextId = Math.max(0, ...currentTasks.map((task) => task.id)) + 1
+
+      return [
+        ...currentTasks,
+        {
+          ...newTask,
+          id: nextId,
+          status: 'todo',
+        },
+      ]
+    })
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <Header />
-      <main className="mx-auto max-w-6xl space-y-10 px-6 py-10">
-        <NewTaskForm />
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          <Column title="Todo">
-            {todoTasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                id={task.id}
-                title={task.title}
-                description={task.description}
-                assignee={task.assignee}
-                category={task.category}
-                priority={task.priority}
-                status={task.status}
-              />
-            ))}
-          </Column>
-          <Column title="Doing">
-            {doingTasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                id={task.id}
-                title={task.title}
-                description={task.description}
-                assignee={task.assignee}
-                category={task.category}
-                priority={task.priority}
-                status={task.status}
-              />
-            ))}
-          </Column>
-          <Column title="Done">
-            {doneTasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                id={task.id}
-                title={task.title}
-                description={task.description}
-                assignee={task.assignee}
-                category={task.category}
-                priority={task.priority}
-                status={task.status}
-              />
-            ))}
-          </Column>
-        </div>
-      </main>
+      <TaskBoard tasks={tasks} onCreateTask={handleCreateTask} />
     </div>
   )
 }

@@ -7,3 +7,5 @@ export type Task = {
   priority: string
   status: 'todo' | 'doing' | 'done'
 }
+
+export type NewTask = Omit<Task, 'id' | 'status'>

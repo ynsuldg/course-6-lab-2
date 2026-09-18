@@ -1,6 +1,11 @@
 import { useState } from 'react'
+import type { NewTask } from '../types/Task'
 
-function NewTaskForm() {
+type NewTaskFormProps = {
+  onCreateTask: (task: NewTask) => void
+}
+
+function NewTaskForm({ onCreateTask }: NewTaskFormProps) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [assignee, setAssignee] = useState('')
@@ -10,7 +15,21 @@ function NewTaskForm() {
   const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    console.log({ title, description, assignee, category, priority })
+    const newTask: NewTask = {
+      title,
+      description,
+      assignee,
+      category,
+      priority,
+    }
+
+    onCreateTask(newTask)
+
+    setTitle('')
+    setDescription('')
+    setAssignee('')
+    setCategory('')
+    setPriority('Låg')
   }
 
   return (
